@@ -1,0 +1,146 @@
+import { Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { RadioGroup } from "../ui/radio-group";
+import { Button } from "../ui/button";
+
+const Signup = () => {
+  const { loading } = useSelector((store) => store.auth);
+  const { user } = useSelector((store) => store.auth);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [input, setInput] = useState({});
+
+  async function submitHandler(e) {}
+
+  function changeEventHandler(e) {}
+
+  function changeFileHandler(e) {}
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100 pt-20 pb-8 px-4">
+      <div className="max-w-md mx-auto">
+        {/* Form Container with Header Inside */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden">
+          {/* Header Section */}
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 text-center">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Create Account
+            </h1>
+            <p className="text-emerald-100">Join InterviewMocker today</p>
+          </div>
+
+          {/* Form Section */}
+          <div className="p-8">
+          <form onSubmit={submitHandler} className="space-y-5">
+            {/* Full Name */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium text-sm">Full Name</Label>
+              <Input
+                type="text"
+                value={input.fullname}
+                name="fullname"
+                onChange={changeEventHandler}
+                placeholder="Enter your full name"
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg h-11 transition-all duration-200 bg-slate-50 focus:bg-white"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium text-sm">Email Address</Label>
+              <Input
+                type="email"
+                value={input.email}
+                name="email"
+                onChange={changeEventHandler}
+                placeholder="Enter your email"
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg h-11 transition-all duration-200 bg-slate-50 focus:bg-white"
+              />
+            </div>
+
+            {/* Phone Number */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium text-sm">Phone Number</Label>
+              <Input
+                type="text"
+                value={input.phoneNumber}
+                name="phoneNumber"
+                onChange={changeEventHandler}
+                placeholder="Enter your phone number"
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg h-11 transition-all duration-200 bg-slate-50 focus:bg-white"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium text-sm">Password</Label>
+              <Input
+                type="password"
+                value={input.password}
+                name="password"
+                onChange={changeEventHandler}
+                placeholder="Create a strong password"
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg h-11 transition-all duration-200 bg-slate-50 focus:bg-white"
+              />
+            </div>
+
+            {/* Profile Picture */}
+            <div className="space-y-2">
+              <Label className="text-slate-700 font-medium text-sm">Profile Picture</Label>
+              <Input
+                accept="image/*"
+                type="file"
+                onChange={changeFileHandler}
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-lg h-11 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all duration-200 bg-slate-50"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              {loading ? (
+                <Button 
+                  disabled
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium shadow-lg opacity-75 cursor-not-allowed"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </Button>
+              ) : (
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                >
+                  Create Account
+                </Button>
+              )}
+            </div>
+
+            {/* Login Link */}
+            <div className="text-center pt-4 border-t border-slate-200">
+              <span className="text-slate-600 text-sm">
+                Already have an account?{" "}
+                <NavLink 
+                  to="/login" 
+                  className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors duration-200 hover:underline"
+                >
+                  Sign In
+                </NavLink>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+  );
+};
+
+export default Signup;

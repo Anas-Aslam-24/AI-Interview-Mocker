@@ -1,0 +1,72 @@
+# --------------------
+# Node.js Dependencies
+# --------------------
+frontend/node_modules/
+backend/node_modules/
+node_modules/
+
+# --------------------
+# Environment Variables
+# --------------------
+frontend/.env
+backend/.env
+.env
+
+# --------------------
+# Build / Output Files
+# --------------------
+frontend/dist/
+frontend/build/
+backend/dist/
+backend/build/
+dist/
+build/
+*.local
+
+# --------------------
+# Logs
+# --------------------
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --------------------
+# OS / System Files
+# --------------------
+.DS_Store
+Thumbs.db
+
+# --------------------
+# Editor / IDE Configs
+# --------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --------------------
+# Testing
+# --------------------
+coverage/
+*.lcov
+
+# --------------------
+# Misc
+# --------------------
+*.tgz
+*.gz
+
+# --------------------
+# Optional: Ignore SQLite or other local DB files
+# --------------------
+*.sqlite
+*.db
+*.sqlite3
