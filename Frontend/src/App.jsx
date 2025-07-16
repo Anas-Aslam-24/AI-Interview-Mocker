@@ -6,6 +6,8 @@ import Signup from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
 import Home from "./components/pages/Home";
 
+import InterviewSetupPage from "./components/InterviewSetupPage";
+
 function App() {
   
 
@@ -16,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/interview" element={<InterviewSetupPage />} />
       </Routes>
     </div>
   );

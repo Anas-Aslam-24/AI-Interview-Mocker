@@ -2,6 +2,25 @@ import mongoose from "mongoose";
 
 const interviewSchema = new mongoose.Schema(
   {
+    jobTitle:{
+        type:String
+    },
+    company: {
+      type:String,
+    },
+    jobDescription: {
+      type:String,
+    },
+    skills: {
+      type:String,
+    },
+    difficulty:{
+      type: String,
+    },
+    experience: {
+      type:Number
+    },
+   
     feedback: {
       type: String,
     },
@@ -23,7 +42,9 @@ const interviewSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-},{ timestamps: true,});
+  },
+  { timestamps: true }
+);
 
 const Interview = mongoose.model("Interview", interviewSchema);
 
