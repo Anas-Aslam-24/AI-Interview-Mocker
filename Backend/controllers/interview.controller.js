@@ -47,8 +47,9 @@ export const registerInterview = async (req, res) => {
 // Update feedback and rating after completion
 export const updateFeedbackAndRating = async (req, res) => {
   try {
-    const { interviewId } = req.params;
-    const { feedback, rating } = req.body;
+    const { interviewId, intResult } = req.body;
+    // console.log(req.body)
+    
 
     const interview = await Interview.findById(interviewId);
 
@@ -58,12 +59,11 @@ export const updateFeedbackAndRating = async (req, res) => {
         .json({ success: false, message: "Interview not found" });
     }
 
-    if (interview.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, message: "Unauthorized" });
-    }
+    
 
-    interview.feedback = feedback;
-    interview.rating = rating;
+    interview.results = intResult;
+   
+   
 
     await interview.save();
 
@@ -80,7 +80,7 @@ export const updateFeedbackAndRating = async (req, res) => {
 // Optional: Get all interviews of a user
 export const getUserInterviews = async (req, res) => {
   try {
-    const interviews = await Interview.find({ user: req.user._id }).sort({
+    const interviews = await Interview.find({ user: req.id }).sort({
       createdAt: -1,
     });
     res.status(200).json({ success: true, interviews });

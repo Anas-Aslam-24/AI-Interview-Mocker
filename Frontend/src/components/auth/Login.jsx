@@ -13,7 +13,9 @@ import { setUser } from "@/redux/slices/authSlice";
 
 
 const Login = () => {
-  const { loading } = useSelector((store) => store.auth);
+  
+  const [loading, setLoading] = useState(false);
+ 
   
 
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const Login = () => {
     e.preventDefault(); // prevent default form submission
 
     try {
+      setLoading(true);
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -46,6 +49,8 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Login failed");
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -105,7 +110,7 @@ const Login = () => {
                     className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium shadow-lg opacity-75 cursor-not-allowed"
                   >
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Account...
+                    Login Account...
                   </Button>
                 ) : (
                   <Button

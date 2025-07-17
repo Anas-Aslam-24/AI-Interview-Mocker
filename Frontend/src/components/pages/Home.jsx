@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,8 +17,14 @@ import {
   Target,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { INTERVIEW_API_ENDPOINT } from "@/utils/utils";
+import { setAllUserInterviews } from "@/redux/slices/interviewSlice";
+import usegetAllUserInterviews from "@/hooks/usegetAllUserInterviews";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const features = [
     {
       icon: <MessageSquare className="h-6 w-6" />,
@@ -89,6 +95,11 @@ const Home = () => {
     { number: "4.9/5", label: "Average Rating" },
   ];
 
+
+
+  // const {user} = useSelector(store=>store.auth)
+    // usegetAllUserInterviews(user);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       {/* Hero Section */}
@@ -133,7 +144,7 @@ const Home = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="max-w-10/12 mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -146,7 +157,7 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Features Section */}
       <section className="py-20 bg-gradient-to-b from-white to-slate-50">

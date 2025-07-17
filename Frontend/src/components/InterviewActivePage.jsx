@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,10 +22,15 @@ import {
 import useSpeechToText from "react-hook-speech-to-text";
 
 import Webcam from "react-webcam";
-import { useSelector } from "react-redux";
-
-
-
+import { useDispatch, useSelector } from "react-redux";
+import genAI from "@/utils/genAi";
+import { useNavigate, useParams } from "react-router-dom";
+import { INTERVIEW_API_ENDPOINT } from "@/utils/utils";
+import axios from "axios";
+import { setInterviewResult } from "@/redux/slices/interviewSlice";
+import { toast } from "sonner";
+import store from "@/redux/store";
+import usegetAllUserInterviews from "@/hooks/usegetAllUserInterviews";
 
 const InterviewActivePage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -34,13 +38,16 @@ const InterviewActivePage = () => {
   const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes in seconds
   const [userAnswer, setUserAnswer] = useState("");
   const [volOn, setVolOn] = useState(false);
+  const [processedResultsCount, setProcessedResultsCount] = useState(0); // Track processed results
 
-  // useEffect(()=>{
-  //   console.log("current ques:", currentQuestion);
-  //   console.log("answered question:", answeredQuestions);
-  // },[currentQuestion, answeredQuestions]);
+  const [cameraEnabled, setCameraEnabled] = useState(true);
 
-  const[cameraEnabled, setCameraEnabled] = useState(true);
+  const [intResult,setIntResult] = useState([]);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const params = useParams();
+  // console.log(params.id);
 
   const {
     error,
@@ -49,20 +56,77 @@ const InterviewActivePage = () => {
     results,
     startSpeechToText,
     stopSpeechToText,
+    clearResults, // Add this if available in your hook
   } = useSpeechToText({
     continuous: true,
     useLegacyResults: false,
   });
 
+  const saveUserAnswer = async () => {
+    if (isRecording) {
+      stopSpeechToText();
+    } else {
+      startSpeechToText();
+    }
+  };
+
+  // Process only new results to avoid accumulation
   useEffect(() => {
-    results.map((result) => {
-      setUserAnswer((prev) => prev + result.transcript);
-    });
-  }, [results]);
+    if (results.length > processedResultsCount) {
+      const newResults = results.slice(processedResultsCount);
+      newResults.forEach((result) => {
+        setUserAnswer((prev) => prev + result.transcript);
+      });
+      setProcessedResultsCount(results.length);
+    }
+  }, [results, processedResultsCount]);
+
+  const gettingFeedback = async () => {
+    console.log("question:", questions[currentQuestion]);
+    console.log("answer: ", userAnswer);
+
+    const prompt = `question: ${questions[currentQuestion]}, answer: ${userAnswer}. Based on question and answer given in an interview. give a rating on scale 1 to 10 (Be strict while rating.) and also give an honest feedback in 3-4 lines.act like you are taking the interview. give response in json format and "rating" and "feedback" as a field in json resonse`;
+    const feed = await genAI(prompt);
+    
+   setIntResult((prev) => [
+     ...prev,
+     {
+       question: questions[currentQuestion],
+       answer: userAnswer,
+       rating: Number(feed.rating),
+       feedback: feed.feedback,
+     },
+   ]);
+
+    // Mark this question as answered
+    setAnsweredQuestions((prev) => new Set([...prev, currentQuestion]));
+
+    // Clear everything for next question
+    clearCurrentAnswer();
+
+    // console.log(feed);
+    // console.log(intResult);
+  };
+
+  // Function to clear current answer and reset counters
+  const clearCurrentAnswer = () => {
+    setUserAnswer("");
+    // setProcessedResultsCount(0);
+    // Clear results if the hook provides this method
+    if (clearResults) {
+      clearResults();
+    }
+  };
+
+  // Only trigger feedback when recording stops and there's a valid answer
+  useEffect(() => {
+    if (!isRecording && userAnswer.length > 10) {
+      gettingFeedback();
+    }
+  }, [isRecording]);
 
   // Mock questions data
-  const {questions} = useSelector(store=>store.interview)
-  
+  const { questions } = useSelector((store) => store.interview);
 
   // Timer effect for overall interview
   useEffect(() => {
@@ -80,18 +144,18 @@ const InterviewActivePage = () => {
       .padStart(2, "0")}`;
   };
 
-
-
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
+      // Clear answer and reset counters when moving to next question
+      clearCurrentAnswer();
       setCurrentQuestion((prev) => prev + 1);
-    
     }
   };
 
   const selectQuestion = (index) => {
+    // Clear answer and reset counters when selecting a different question
+    clearCurrentAnswer();
     setCurrentQuestion(index);
-   
   };
 
   const textToSpeech = async (text) => {
@@ -112,10 +176,39 @@ const InterviewActivePage = () => {
     }
   };
 
+  const finishInterview = async() => {
+    console.log(intResult);
 
-  const finishInterview = () => {
-    alert("Interview completed! Redirecting to results...");
+    try {
+        const res = await axios.post(
+          `${INTERVIEW_API_ENDPOINT}/updateFeedbackAndRating`,
+          { interviewId :params.id, intResult},
+          {
+            headers:{"Content-Type":"application/json"},
+            withCredentials:true
+          }
+        );
+
+        if(res.data.success){
+          dispatch(setInterviewResult(res.data.interview))
+         
+          navigate(`/interview/${params.id}/end`);
+
+          toast.success(res.data.message);
+        }
+    } catch (error) {
+      console.log(error);
+      toast.error('something went wrong....')
+      
+    }
+    
   };
+
+  const { interviewResult } = useSelector((store) => store.interview);
+
+      usegetAllUserInterviews(interviewResult);
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100">
@@ -231,7 +324,6 @@ const InterviewActivePage = () => {
               <Card className="bg-white border border-slate-200 rounded-2xl shadow-lg flex-1">
                 <CardContent className="p-8 h-full flex flex-col">
                   {/* Camera Preview - Much Larger */}
-
                   <div className="flex-1 bg-black rounded-xl overflow-hidden mb-6 flex items-center justify-center min-h-[400px]">
                     <div className="text-center">
                       {cameraEnabled ? (
@@ -259,9 +351,7 @@ const InterviewActivePage = () => {
                   <div className="space-y-4">
                     <div className="text-center">
                       <Button
-                        onClick={
-                          isRecording ? stopSpeechToText : startSpeechToText
-                        }
+                        onClick={saveUserAnswer}
                         className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
                           isRecording
                             ? "bg-red-600 hover:bg-red-700 text-white shadow-lg transform hover:scale-105"
@@ -280,7 +370,6 @@ const InterviewActivePage = () => {
                           </>
                         )}
                       </Button>
-                      {/* <button onClick={()=>{setCameraEnabled(true)}}>show user answer</button> */}
                     </div>
 
                     {/* Recording Status */}
@@ -304,6 +393,15 @@ const InterviewActivePage = () => {
                         </span>
                       </div>
                     </div>
+
+                    {/* Show current answer for debugging */}
+                    {userAnswer && (
+                      <div className="text-center">
+                        <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
+                          Current Answer: {userAnswer}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Navigation */}
                     <div className="flex justify-between items-center pt-4 border-t border-slate-200">
@@ -364,22 +462,3 @@ const InterviewActivePage = () => {
 };
 
 export default InterviewActivePage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  

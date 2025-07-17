@@ -1,17 +1,18 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LogOut, User2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { USER_API_ENDPOINT } from "@/utils";
+import { USER_API_ENDPOINT } from "@/utils/utils";
 import { toast } from "sonner";
 import axios from "axios";
 import { setUser } from "@/redux/slices/authSlice";
 
 const Navbar = () => {
     const { user } = useSelector((store) => store.auth);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
   const logoutHandler = async () => {
@@ -45,7 +46,7 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        <div className="flex items-center gap-12">
+        {/* <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-5">
             <li className="cursor-pointer">
               <NavLink
@@ -82,7 +83,7 @@ const Navbar = () => {
               </NavLink>
             </li>
           </ul>
-        </div>
+        </div> */}
 
         <div>
           {!user ? (
@@ -103,63 +104,77 @@ const Navbar = () => {
               </NavLink>
             </div>
           ) : (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer h-10 w-10 ring-2 ring-emerald-200 hover:ring-emerald-300 transition-all duration-200">
-                  <AvatarImage src={user?.profile.profilePhoto} alt="@shadcn" />
-                  {/* <AvatarFallback>NA</AvatarFallback> */}
-                </Avatar>
-              </PopoverTrigger>
+            <div className="flex gap-5">
+              <NavLink to="/dashboard">
+                <Button
+                  variant="outline"
+                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                >
+                  Dashboard
+                </Button>
+              </NavLink>
 
-              <PopoverContent className="w-80 p-4 bg-white/95 backdrop-blur-md border-emerald-200/60 shadow-xl">
-                <div>
-                  <div className="flex gap-2 space-y-2 items-start">
-                    <Avatar className="h-10 w-10 ring-2 ring-emerald-200">
-                      <AvatarImage
-                        src={user?.profile.profilePhoto}
-                        alt="@shadcn"
-                      />
-                      {/* <AvatarFallback>NA</AvatarFallback> */}
-                    </Avatar>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Avatar className="cursor-pointer h-10 w-10 ring-2 ring-emerald-200 hover:ring-emerald-300 transition-all duration-200">
+                    <AvatarImage
+                      src={user?.profile.profilePhoto}
+                      alt="@shadcn"
+                    />
+                    {/* <AvatarFallback>NA</AvatarFallback> */}
+                  </Avatar>
+                </PopoverTrigger>
 
-                    <div>
-                      <h4 className="font-medium text-slate-800">
-                        {user?.fullname}
-                      </h4>
-                      <p className="text-sm text-slate-600">
-                        {user?.profile.bio}
-                      </p>
+                <PopoverContent className="w-80 p-4 bg-white/95 backdrop-blur-md border-emerald-200/60 shadow-xl">
+                  <div>
+                    <div className="flex gap-2 space-y-2 items-start">
+                      <Avatar className="h-10 w-10 ring-2 ring-emerald-200">
+                        <AvatarImage
+                          src={user?.profile.profilePhoto}
+                          alt="@shadcn"
+                        />
+                        {/* <AvatarFallback>NA</AvatarFallback> */}
+                      </Avatar>
+
+                      <div>
+                        <h4 className="font-medium text-slate-800">
+                          {user?.fullname}
+                        </h4>
+                        <p className="text-sm text-slate-600">
+                          {user?.profile.bio}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col my-2 mt-2 text-slate-600 gap-4">
+                      <div className="flex w-fit items-center gap-6 cursor-pointer group">
+                        <User2 className="text-emerald-500 group-hover:text-emerald-600 transition-colors duration-200" />
+                        <Button
+                          onClick={() => {
+                            navigate("/profile");
+                          }}
+                          variant="link"
+                          className="cursor-pointer p-0 h-auto text-slate-700 hover:text-emerald-600 transition-colors duration-200"
+                        >
+                          View Profile
+                        </Button>
+                      </div>
+
+                      <div className="flex w-fit items-center gap-6 cursor-pointer group">
+                        <LogOut className="text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
+                        <Button
+                          onClick={logoutHandler}
+                          variant="link"
+                          className="cursor-pointer p-0 h-auto text-slate-700 hover:text-amber-600 transition-colors duration-200"
+                        >
+                          Logout
+                        </Button>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="flex flex-col my-2 mt-2 text-slate-600 gap-4">
-                    <div className="flex w-fit items-center gap-6 cursor-pointer group">
-                      <User2 className="text-emerald-500 group-hover:text-emerald-600 transition-colors duration-200" />
-                      <Button
-                        onClick={() => {
-                          navigate("/profile");
-                        }}
-                        variant="link"
-                        className="cursor-pointer p-0 h-auto text-slate-700 hover:text-emerald-600 transition-colors duration-200"
-                      >
-                        View Profile
-                      </Button>
-                    </div>
-
-                    <div className="flex w-fit items-center gap-6 cursor-pointer group">
-                      <LogOut className="text-amber-500 group-hover:text-amber-600 transition-colors duration-200" />
-                      <Button
-                        onClick={logoutHandler}
-                        variant="link"
-                        className="cursor-pointer p-0 h-auto text-slate-700 hover:text-amber-600 transition-colors duration-200"
-                      >
-                        Logout
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            </div>
           )}
         </div>
       </div>

@@ -8,7 +8,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 
 import { Button } from "../ui/button";
-import { USER_API_ENDPOINT } from "@/utils";
+import { USER_API_ENDPOINT } from "@/utils/utils";
 
 
 

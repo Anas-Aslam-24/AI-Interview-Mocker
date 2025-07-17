@@ -14,21 +14,25 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 
 import Webcam from "react-webcam";
+import { useSelector } from "react-redux";
 
 const InterviewInstructios = () => {
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
 
+   
+  const {singleInterview} = useSelector(store=>store.interview); 
+
   const navigate = useNavigate();
 
   // Mock interview data - this would come from previous page
-  const interviewData = {
-    jobRole: "Full Stack Developer",
-    techStack: "React, Node.js",
-    experience: "4",
-    totalQuestions: 5,
-    duration: "30 minutes",
-  };
+  // const interviewData = {
+  //   jobRole: "Full Stack Developer",
+  //   techStack: "React, Node.js",
+  //   experience: "4",
+  //   totalQuestions: 5,
+  //   duration: "30 minutes",
+  // };
 
   const enableCamera = async () => {
     try {
@@ -85,16 +89,16 @@ const InterviewInstructios = () => {
                           Job Role/Job Position:
                         </div>
                         <div className="text-slate-600 font-medium">
-                          {interviewData.jobRole}
+                          {singleInterview.jobTitle}
                         </div>
                       </div>
 
                       <div className="flex items-start gap-3">
                         <div className="text-slate-700 font-semibold min-w-0">
-                          Job Description/Tech Stack:
+                         skills:
                         </div>
                         <div className="text-slate-600 font-medium">
-                          {interviewData.techStack}
+                          {singleInterview.skills}
                         </div>
                       </div>
 
@@ -103,7 +107,7 @@ const InterviewInstructios = () => {
                           Years of Experience:
                         </div>
                         <div className="text-slate-600 font-medium">
-                          {interviewData.experience}
+                          {singleInterview.experience}
                         </div>
                       </div>
                     </div>
@@ -126,9 +130,9 @@ const InterviewInstructios = () => {
                         <p className="text-amber-700 leading-relaxed">
                           Enable Video Web Cam and Microphone to Start your AI
                           Generated Mock Interview. It Has{" "}
-                          {interviewData.totalQuestions} question which you can
-                          answer and at the last you will get the report on the
-                          basis of your answer.
+                          {singleInterview.questions.length} question which you
+                          can answer and at the last you will get the report on
+                          the basis of your answer.
                           <span className="font-semibold">
                             NOTE: We never record your video
                           </span>
@@ -150,8 +154,12 @@ const InterviewInstructios = () => {
                       {cameraEnabled ? (
                         <Webcam
                           className="w-full h-full object-cover rounded-xl"
-                          onUserMedia={()=>{setCameraEnabled(true)}}
-                          onUserMediaError={()=>{setCameraEnabled(false)}}
+                          onUserMedia={() => {
+                            setCameraEnabled(true);
+                          }}
+                          onUserMediaError={() => {
+                            setCameraEnabled(false);
+                          }}
                           mirrored={true}
                         />
                       ) : (

@@ -26,13 +26,13 @@ import {
   Mic,
 } from "lucide-react";
 
-import genAI from "@/genAi.js";
+import genAI from "@/utils/genAi.js";
 import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setQuestions } from "@/redux/slices/interviewSlice";
-import { INTERVIEW_API_ENDPOINT } from "@/utils";
+import { setQuestions, setSingleInterview } from "@/redux/slices/interviewSlice";
+import { INTERVIEW_API_ENDPOINT } from "@/utils/utils";
 
 const InterviewSetupPage = () => {
 
@@ -63,10 +63,12 @@ const InterviewSetupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+
+    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate five interview questions  JSON format`;
     
     try {
       setLoading(true);
-      const data =  await genAI(formData);
+      const data =  await genAI(prompt);
       console.log(data);
       const questionsArray = data.map((item) => item.question);
       // const answersArray = data.map((item) => item.answer);
@@ -87,6 +89,7 @@ const InterviewSetupPage = () => {
         );
          if (res.data.success) {
           dispatch(setQuestions(questionsArray));
+          dispatch(setSingleInterview(res.data.interview));
           navigate(`/interview/${res.data.interview._id}`);
         
           toast.success(res.data.message);

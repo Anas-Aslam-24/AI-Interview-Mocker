@@ -2,41 +2,40 @@ import mongoose from "mongoose";
 
 const interviewSchema = new mongoose.Schema(
   {
-    jobTitle:{
-        type:String
+    jobTitle: {
+      type: String,
     },
     company: {
-      type:String,
+      type: String,
     },
     jobDescription: {
-      type:String,
+      type: String,
     },
     skills: {
-      type:String,
+      type: String,
     },
-    difficulty:{
+    difficulty: {
       type: String,
     },
     experience: {
-      type:String
-    },
-   
-    feedback: {
       type: String,
     },
-    rating: {
-      type: Number,
-    },
+
     questions: [
       {
         type: String,
       },
     ],
-    answers: [
+
+    results: [
       {
-        type: String,
+        question: { type: String, required: true },
+        answer: { type: String, required: true },
+        rating: { type: Number, required: true },
+        feedback: { type: String, required: true },
       },
     ],
+
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
