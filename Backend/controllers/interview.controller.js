@@ -15,7 +15,10 @@ export const registerInterview = async (req, res) => {
       answers,
     } = req.body;
 
+
     const userId = req.id; // middleware authentication
+
+
 
     const newInterview = new Interview({
       jobTitle,
@@ -25,8 +28,10 @@ export const registerInterview = async (req, res) => {
       difficulty,
       experience,
       questions,
-      answers, // assuming req.user is set by auth middleware
+      answers, 
+      user:userId
     });
+    
 
     const savedInterview = await newInterview.save();
     res.status(201).json({

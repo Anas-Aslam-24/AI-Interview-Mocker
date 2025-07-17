@@ -18,7 +18,7 @@ const interviewSchema = new mongoose.Schema(
       type: String,
     },
     experience: {
-      type:Number
+      type:String
     },
    
     feedback: {

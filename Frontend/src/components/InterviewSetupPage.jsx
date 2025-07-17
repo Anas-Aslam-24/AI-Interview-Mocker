@@ -29,8 +29,16 @@ import {
 import genAI from "@/genAi.js";
 import axios from "axios";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setQuestions } from "@/redux/slices/interviewSlice";
+import { INTERVIEW_API_ENDPOINT } from "@/utils";
 
 const InterviewSetupPage = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -50,15 +58,21 @@ const InterviewSetupPage = () => {
     
   };
 
-  const INTERVIEW_API_ENDPOINT = "http://localhost:3000/api/v1/interview";
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
     
     try {
       setLoading(true);
-      const data = await genAI(formData);
-      const postData = {...formData, questions:data.questions, answers:data.answers};
+      const data =  await genAI(formData);
+      console.log(data);
+      const questionsArray = data.map((item) => item.question);
+      // const answersArray = data.map((item) => item.answer);
+
+      const postData = {...formData, questions:questionsArray};
+
 
       try {
         const res = await axios.post(
@@ -72,16 +86,20 @@ const InterviewSetupPage = () => {
           }
         );
          if (res.data.success) {
-          toast.error(error.response?.data?.message || "Something went wrong");
+          dispatch(setQuestions(questionsArray));
+          navigate(`/interview/${res.data.interview._id}`);
+        
+          toast.success(res.data.message);
+          
          }
       } catch (error) {
         console.log(error);
-        toast.error(response.error.data.message);
+       toast.error(error.response?.data?.message || "Something went wrong");
         
       }
 
     } catch (error) {
-      
+      console.log(error);
     }finally{
       setLoading(false);
     }

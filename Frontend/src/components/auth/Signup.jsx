@@ -6,23 +6,69 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { RadioGroup } from "../ui/radio-group";
+
 import { Button } from "../ui/button";
+import { USER_API_ENDPOINT } from "@/utils";
+
+
 
 const Signup = () => {
-  const { loading } = useSelector((store) => store.auth);
-  const { user } = useSelector((store) => store.auth);
+  const[loading, setLoading] = useState(false);
+
+
+
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [input, setInput] = useState({});
+  const [input, setInput] = useState({
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    file: "",
+  });
 
-  async function submitHandler(e) {}
+    function changeEventHandler(e) {
+      setInput({...input, [e.target.name]:e.target.value});
+    }
 
-  function changeEventHandler(e) {}
+    function changeFileHandler(e) {
+      setInput({ ...input, file: e.target.files?.[0] });
+    }
 
-  function changeFileHandler(e) {}
+  async function submitHandler(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("password", input.password);
+    formData.append("phoneNumber", input.phoneNumber);
+
+    if (input.file) {
+      formData.append("file", input.file);
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${USER_API_ENDPOINT}/register`,formData,{
+        headers:{"Content-Type":'multipart/form-data'},
+        withCredentials:true,
+      });
+
+      if(res.data.success){
+        navigate('/login');
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100 pt-20 pb-8 px-4">

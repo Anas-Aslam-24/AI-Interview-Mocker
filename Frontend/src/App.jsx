@@ -7,6 +7,9 @@ import Login from "./components/auth/Login";
 import Home from "./components/pages/Home";
 
 import InterviewSetupPage from "./components/InterviewSetupPage";
+import InterviewVideoPage from "./components/InterviewActivePage";
+import InterviewInstructios from "./components/InterviewInstructios";
+import InterviewActivePage from "./components/InterviewActivePage";
 
 function App() {
   
@@ -19,6 +22,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/interview" element={<InterviewSetupPage />} />
+        <Route path="/interview/:id" element={<InterviewInstructios />} />
+        <Route path="/interview/:id/init" element={<InterviewActivePage />} />
       </Routes>
     </div>
   );

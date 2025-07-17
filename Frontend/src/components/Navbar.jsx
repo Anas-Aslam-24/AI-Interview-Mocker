@@ -4,11 +4,33 @@ import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LogOut, User2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { USER_API_ENDPOINT } from "@/utils";
+import { toast } from "sonner";
+import axios from "axios";
+import { setUser } from "@/redux/slices/authSlice";
 
 const Navbar = () => {
-  const logoutHandler = async () => {};
+    const { user } = useSelector((store) => store.auth);
+    const dispatch = useDispatch();
 
-  const user = false;
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${USER_API_ENDPOINT}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      // toast.error(error.response.data.message);
+    }
+  };
+
+
   return (
     <div className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-200/60 backdrop-blur-sm">
       <div className="flex items-center justify-between mx-auto max-w-10/12 h-16">

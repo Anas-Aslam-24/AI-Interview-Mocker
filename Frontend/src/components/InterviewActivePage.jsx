@@ -1,0 +1,385 @@
+
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Square,
+  Play,
+  SkipForward,
+  Clock,
+  User,
+  Info,
+  CheckCircle2,
+  Circle,
+  Volume1Icon,
+  Volume1,
+  Volume2,
+  Volume2Icon,
+  VolumeIcon,
+  VolumeOff,
+} from "lucide-react";
+
+import useSpeechToText from "react-hook-speech-to-text";
+
+import Webcam from "react-webcam";
+import { useSelector } from "react-redux";
+
+
+
+
+const InterviewActivePage = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
+  const [timeLeft, setTimeLeft] = useState(1800); // 30 minutes in seconds
+  const [userAnswer, setUserAnswer] = useState("");
+  const [volOn, setVolOn] = useState(false);
+
+  // useEffect(()=>{
+  //   console.log("current ques:", currentQuestion);
+  //   console.log("answered question:", answeredQuestions);
+  // },[currentQuestion, answeredQuestions]);
+
+  const[cameraEnabled, setCameraEnabled] = useState(true);
+
+  const {
+    error,
+    interimResult,
+    isRecording,
+    results,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    continuous: true,
+    useLegacyResults: false,
+  });
+
+  useEffect(() => {
+    results.map((result) => {
+      setUserAnswer((prev) => prev + result.transcript);
+    });
+  }, [results]);
+
+  // Mock questions data
+  const {questions} = useSelector(store=>store.interview)
+  
+
+  // Timer effect for overall interview
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft]);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion((prev) => prev + 1);
+    
+    }
+  };
+
+  const selectQuestion = (index) => {
+    setCurrentQuestion(index);
+   
+  };
+
+  const textToSpeech = async (text) => {
+    if ("speechSynthesis" in window) {
+      const synth = window.speechSynthesis;
+
+      if (synth.speaking) {
+        synth.cancel();
+        setVolOn(false);
+      } else {
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.onend = () => setVolOn(false);
+        synth.speak(speech);
+        setVolOn(true);
+      }
+    } else {
+      alert(`Your browser doesn't support text to speech.`);
+    }
+  };
+
+
+  const finishInterview = () => {
+    alert("Interview completed! Redirecting to results...");
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100">
+      {/* Header with Timer */}
+      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 py-4">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-white">
+            <span className="text-amber-300"></span>
+          </h1>
+
+          <div className="flex items-center gap-4 text-white">
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              <span className="font-semibold">{formatTime(timeLeft)}</span>
+            </div>
+            <div className="text-emerald-200">
+              Question {currentQuestion + 1} of {questions.length}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-8 h-[calc(100vh-200px)]">
+            {/* Left Side - Questions */}
+            <div className="space-y-6 flex flex-col">
+              {/* Question Navigation */}
+              <Card className="bg-white border border-slate-200 rounded-2xl shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex flex-wrap gap-3">
+                    {questions.map((_, index) => (
+                      <Button
+                        key={index}
+                        onClick={() => selectQuestion(index)}
+                        variant={
+                          currentQuestion === index ? "default" : "outline"
+                        }
+                        className={`px-4 py-2 rounded-full transition-all duration-200 ${
+                          currentQuestion === index
+                            ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg"
+                            : answeredQuestions.has(index)
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                            : "border-slate-300 text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          {answeredQuestions.has(index) ? (
+                            <CheckCircle2 className="h-4 w-4" />
+                          ) : (
+                            <Circle className="h-4 w-4" />
+                          )}
+                          Q{index + 1}
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Current Question */}
+              <Card className="bg-white border border-slate-200 rounded-2xl shadow-lg flex-1">
+                <CardContent className="p-8 h-full flex flex-col">
+                  <div className="mb-6">
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
+                      Question {currentQuestion + 1}
+                    </Badge>
+                    <h2 className="text-xl font-semibold text-slate-800 leading-relaxed">
+                      {questions[currentQuestion]}
+                    </h2>
+                  </div>
+
+                  <div
+                    className="mt-5 cursor-pointer p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition duration-200 shadow-md text-gray-700"
+                    onClick={() => {
+                      textToSpeech(questions[currentQuestion]);
+                    }}
+                  >
+                    {volOn ? (
+                      <Volume2 className="w-8 h-8 text-green-600 mx-auto" />
+                    ) : (
+                      <VolumeOff className="w-8 h-8 text-red-500 mx-auto" />
+                    )}
+                  </div>
+
+                  {/* Instructions */}
+                  <div className="mt-auto">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-blue-800 mb-1">
+                            Note:
+                          </h4>
+                          <p className="text-blue-700 text-sm leading-relaxed">
+                            Click on Record Answer when you want to answer the
+                            question. At the end of interview we will give you
+                            the feedback along with correct answer for each of
+                            question and your answer to compare it.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Side - Recording Area */}
+            <div className="space-y-6 flex flex-col">
+              {/* Camera/Recording Area */}
+              <Card className="bg-white border border-slate-200 rounded-2xl shadow-lg flex-1">
+                <CardContent className="p-8 h-full flex flex-col">
+                  {/* Camera Preview - Much Larger */}
+
+                  <div className="flex-1 bg-black rounded-xl overflow-hidden mb-6 flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                      {cameraEnabled ? (
+                        <Webcam
+                          className="w-full h-full object-cover rounded-xl"
+                          onUserMedia={() => {
+                            setCameraEnabled(true);
+                          }}
+                          onUserMediaError={() => {
+                            setCameraEnabled(false);
+                          }}
+                          mirrored={true}
+                        />
+                      ) : (
+                        <div className="w-32 h-32 bg-slate-700 rounded-full flex items-center justify-center mb-6 mx-auto">
+                          <User className="h-16 w-16 text-slate-400" />
+                        </div>
+                      )}
+
+                      <p className="text-slate-400 text-lg">Camera Preview</p>
+                    </div>
+                  </div>
+
+                  {/* Recording Controls */}
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <Button
+                        onClick={
+                          isRecording ? stopSpeechToText : startSpeechToText
+                        }
+                        className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                          isRecording
+                            ? "bg-red-600 hover:bg-red-700 text-white shadow-lg transform hover:scale-105"
+                            : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+                        }`}
+                      >
+                        {isRecording ? (
+                          <>
+                            <Square className="h-5 w-5 mr-2" />
+                            Stop Recording
+                          </>
+                        ) : (
+                          <>
+                            <Play className="h-5 w-5 mr-2" />
+                            Record Answer
+                          </>
+                        )}
+                      </Button>
+                      {/* <button onClick={()=>{setCameraEnabled(true)}}>show user answer</button> */}
+                    </div>
+
+                    {/* Recording Status */}
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 text-sm">
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            isRecording
+                              ? "bg-red-500 animate-pulse"
+                              : "bg-slate-300"
+                          }`}
+                        />
+                        <span
+                          className={
+                            isRecording
+                              ? "text-red-600 font-medium"
+                              : "text-slate-500"
+                          }
+                        >
+                          {isRecording ? "Recording..." : "Ready to record"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Navigation */}
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-200">
+                      <Button
+                        onClick={nextQuestion}
+                        disabled={currentQuestion >= questions.length - 1}
+                        variant="outline"
+                        className="border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <SkipForward className="h-4 w-4 mr-2" />
+                        Next Question
+                      </Button>
+
+                      {currentQuestion === questions.length - 1 && (
+                        <Button
+                          onClick={finishInterview}
+                          className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                        >
+                          Finish Interview
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Progress Summary - More Compact */}
+              <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-lg font-bold text-emerald-600">
+                        {answeredQuestions.size} / {questions.length}
+                      </div>
+                      <div className="text-emerald-700 text-sm">
+                        Questions Answered
+                      </div>
+                    </div>
+                    <div className="w-24 bg-emerald-100 rounded-full h-2">
+                      <div
+                        className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                        style={{
+                          width: `${
+                            (answeredQuestions.size / questions.length) * 100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InterviewActivePage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

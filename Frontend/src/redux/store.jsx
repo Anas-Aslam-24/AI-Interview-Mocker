@@ -13,6 +13,7 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import authSlice  from "./slices/authSlice";
+import interviewSlice from "./slices/interviewSlice";
 
 
 const persistConfig = {
@@ -23,6 +24,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth:authSlice,
+  interview:interviewSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
