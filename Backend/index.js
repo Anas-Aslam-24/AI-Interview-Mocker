@@ -25,6 +25,10 @@ app.use(cors(corsOptions));
 
 //APIs
 
+app.get('/',(req,res)=>{
+  res.send("API IS Running!");
+})
+
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/interview", interviewRoute);
 
