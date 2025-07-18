@@ -97,8 +97,8 @@ const Home = () => {
 
 
 
-  // const {user} = useSelector(store=>store.auth)
-    // usegetAllUserInterviews(user);
+  const {user} = useSelector(store=>store.auth)
+    usegetAllUserInterviews(user);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
