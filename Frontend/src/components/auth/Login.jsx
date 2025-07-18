@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Button } from "../ui/button";
 import { setUser } from "@/redux/slices/authSlice";
+import { USER_API_ENDPOINT } from "@/utils/utils";
 
 
 
@@ -20,7 +21,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const USER_API_ENDPOINT = "http://localhost:3000/api/v1/user";
+
 
   const [input, setInput] = useState({
     email: "",
