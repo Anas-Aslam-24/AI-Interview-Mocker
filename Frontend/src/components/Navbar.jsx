@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarImage } from "./ui/avatar";
-import { LogOut, User2 } from "lucide-react";
+import { LogOut, User2, Menu, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { USER_API_ENDPOINT } from "@/utils/utils";
 import { toast } from "sonner";
@@ -11,9 +11,10 @@ import axios from "axios";
 import { setUser } from "@/redux/slices/authSlice";
 
 const Navbar = () => {
-    const { user } = useSelector((store) => store.auth);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const logoutHandler = async () => {
     try {
@@ -31,13 +32,21 @@ const Navbar = () => {
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <div className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-200/60 backdrop-blur-sm">
-      <div className="flex items-center justify-between mx-auto max-w-10/12 h-16">
+      <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
+        {/* Logo */}
         <div>
-          <NavLink to="/">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          <NavLink to="/" onClick={closeMobileMenu}>
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
               Interview
               <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
                 Mocker
@@ -46,69 +55,31 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        {/* <div className="flex items-center gap-12">
-          <ul className="flex font-medium items-center gap-5">
-            <li className="cursor-pointer">
-              <NavLink
-                to="/"
-                style={({ isActive }) => ({
-                  color: isActive ? "#059669" : "inherit",
-                })}
-                className="hover:text-emerald-600 transition-all duration-200 hover:scale-105 text-slate-700"
-              >
-                Home
-              </NavLink>
-            </li>
-
-            <li className="cursor-pointer">
-              <NavLink
-                to="/jobs"
-                style={({ isActive }) => ({
-                  color: isActive ? "#059669" : "inherit",
-                })}
-                className="hover:text-emerald-600 transition-all duration-200 hover:scale-105 text-slate-700"
-              >
-                Feedback
-              </NavLink>
-            </li>
-            <li className="cursor-pointer">
-              <NavLink
-                to="/browse"
-                style={({ isActive }) => ({
-                  color: isActive ? "#059669" : "inherit",
-                })}
-                className="hover:text-emerald-600 transition-all duration-200 hover:scale-105 text-slate-700"
-              >
-                How it Works?
-              </NavLink>
-            </li>
-          </ul>
-        </div> */}
-
-        <div>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center">
           {!user ? (
             <div className="flex items-center gap-2">
               <NavLink to="/login">
                 <Button
                   variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                  className="cursor-pointer border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
                 >
                   Login
                 </Button>
               </NavLink>
 
               <NavLink to="/signup">
-                <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                <Button className="cursor-pointer  bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                   Signup
                 </Button>
               </NavLink>
             </div>
           ) : (
-            <div className="flex gap-5">
+            <div className="flex items-center gap-4">
               <NavLink to="/dashboard">
                 <Button
                   variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                  className="cursor-pointer border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
                 >
                   Dashboard
                 </Button>
@@ -121,7 +92,6 @@ const Navbar = () => {
                       src={user?.profile.profilePhoto}
                       alt="@shadcn"
                     />
-                    {/* <AvatarFallback>NA</AvatarFallback> */}
                   </Avatar>
                 </PopoverTrigger>
 
@@ -133,7 +103,6 @@ const Navbar = () => {
                           src={user?.profile.profilePhoto}
                           alt="@shadcn"
                         />
-                        {/* <AvatarFallback>NA</AvatarFallback> */}
                       </Avatar>
 
                       <div>
@@ -177,7 +146,101 @@ const Navbar = () => {
             </div>
           )}
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleMobileMenu}
+            className="cursor-pointer  text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors duration-200"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </Button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-200/60 backdrop-blur-sm">
+          <div className="px-4 py-4 space-y-4">
+            {!user ? (
+              <div className="flex flex-col gap-3">
+                <NavLink to="/login" onClick={closeMobileMenu}>
+                  <Button
+                    variant="outline"
+                    className="cursor-pointer w-full border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                  >
+                    Login
+                  </Button>
+                </NavLink>
+
+                <NavLink to="/signup" onClick={closeMobileMenu}>
+                  <Button className="cursor-pointer w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200">
+                    Signup
+                  </Button>
+                </NavLink>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* User Info */}
+                <div className="flex items-center gap-3 p-3 bg-white/50 rounded-lg border border-emerald-200/60">
+                  <Avatar className="h-12 w-12 ring-2 ring-emerald-200">
+                    <AvatarImage
+                      src={user?.profile.profilePhoto}
+                      alt="@shadcn"
+                    />
+                  </Avatar>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-slate-800 text-sm">
+                      {user?.fullname}
+                    </h4>
+                    <p className="text-xs text-slate-600">
+                      {user?.profile.bio}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Mobile Menu Items */}
+                <div className="space-y-2">
+                  <NavLink to="/dashboard" onClick={closeMobileMenu}>
+                    <Button
+                      variant="outline"
+                      className="cursor-pointer w-full justify-start border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                    >
+                      Dashboard
+                    </Button>
+                  </NavLink>
+
+                  <Button
+                    onClick={() => {
+                      navigate("/profile");
+                      closeMobileMenu();
+                    }}
+                    variant="outline"
+                    className="cursor-pointer w-full justify-start border-emerald-200 text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-600 transition-all duration-200"
+                  >
+                    <User2 className="mr-2 h-4 w-4 text-emerald-500" />
+                    View Profile
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                      logoutHandler();
+                      closeMobileMenu();
+                    }}
+                    variant="outline"
+                    className="cursor-pointer w-full justify-start border-amber-200 text-slate-700 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-600 transition-all duration-200"
+                  >
+                    <LogOut className="mr-2 h-4 w-4 text-amber-500" />
+                    Logout
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

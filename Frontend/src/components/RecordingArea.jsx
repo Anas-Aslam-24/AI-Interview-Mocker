@@ -20,7 +20,7 @@ const RecordingArea = () => {
             <div className="text-center">
               <Button
                 onClick={isRecording ? stopRecording : startRecording}
-                className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
                   isRecording
                     ? "bg-red-600 hover:bg-red-700 text-white shadow-lg transform hover:scale-105"
                     : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -74,7 +74,7 @@ const RecordingArea = () => {
                 onClick={nextQuestion}
                 disabled={currentQuestion >= questions.length - 1}
                 variant="outline"
-                className="border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <SkipForward className="h-4 w-4 mr-2" />
                 Next Question
@@ -83,7 +83,7 @@ const RecordingArea = () => {
               {currentQuestion === questions.length - 1 && (
                 <Button
                   onClick={finishInterview}
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                  className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                 >
                   Finish Interview
                 </Button>

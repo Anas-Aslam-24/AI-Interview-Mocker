@@ -72,7 +72,6 @@ const [interviews, setInterviews] = useState(allUserInterviews);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100">
       {/* Header */}
-      
 
       {/* Main Content */}
       <div className="py-20">
@@ -233,7 +232,7 @@ const [interviews, setInterviews] = useState(allUserInterviews);
               <p className="text-slate-500 mb-6">
                 Start your first interview to see your progress here
               </p>
-              <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+              <Button className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                 Start Interview
               </Button>
             </div>

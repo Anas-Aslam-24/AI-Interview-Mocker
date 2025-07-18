@@ -95,7 +95,7 @@ const InterviewInstructios = () => {
 
                       <div className="flex items-start gap-3">
                         <div className="text-slate-700 font-semibold min-w-0">
-                         skills:
+                          skills:
                         </div>
                         <div className="text-slate-600 font-medium">
                           {singleInterview.skills}
@@ -179,7 +179,7 @@ const InterviewInstructios = () => {
                   <Button
                     onClick={enableCamera}
                     variant={cameraEnabled ? "default" : "outline"}
-                    className={`flex items-center gap-2 px-6 py-3 ${
+                    className={`cursor-pointer flex items-center gap-2 px-6 py-3 ${
                       cameraEnabled
                         ? "bg-emerald-600 text-white hover:bg-emerald-700"
                         : "border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -214,7 +214,7 @@ const InterviewInstructios = () => {
                   <Button
                     onClick={startInterview}
                     disabled={!cameraEnabled || isStarting}
-                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 px-8 py-4 text-lg font-semibold rounded-xl"
+                    className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 px-8 py-4 text-lg font-semibold rounded-xl"
                   >
                     {isStarting ? (
                       <>

@@ -43,7 +43,7 @@ const InterviewFeedback = () => {
           </p>
           <Button
             onClick={() => navigate("/")}
-            className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
+            className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
           >
             Back to Dashboard
           </Button>
@@ -254,7 +254,7 @@ const InterviewFeedback = () => {
             <Button
               onClick={handleBackToDashboard}
               variant="outline"
-              className="border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+              className="cursor-pointer border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
             >
               Back to Dashboard
             </Button>
@@ -262,7 +262,7 @@ const InterviewFeedback = () => {
               onClick={() => {
                 navigate("/interview");
               }}
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
               Start New Interview
             </Button>

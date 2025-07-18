@@ -82,8 +82,8 @@ const InterviewActivePage = () => {
   }, [results, processedResultsCount]);
 
   const gettingFeedback = async () => {
-    console.log("question:", questions[currentQuestion]);
-    console.log("answer: ", userAnswer);
+    // console.log("question:", questions[currentQuestion]);
+    // console.log("answer: ", userAnswer);
 
     const prompt = `question: ${questions[currentQuestion]}, answer: ${userAnswer}. Based on question and answer given in an interview. give a rating on scale 1 to 10 (Be strict while rating.) and also give an honest feedback in 3-4 lines.act like you are taking the interview. give response in json format and "rating" and "feedback" as a field in json resonse`;
     const feed = await genAI(prompt);
@@ -177,7 +177,7 @@ const InterviewActivePage = () => {
   };
 
   const finishInterview = async() => {
-    console.log(intResult);
+    // console.log(intResult);
 
     try {
         const res = await axios.post(
@@ -248,7 +248,7 @@ const InterviewActivePage = () => {
                         variant={
                           currentQuestion === index ? "default" : "outline"
                         }
-                        className={`px-4 py-2 rounded-full transition-all duration-200 ${
+                        className={`cursor-pointer px-4 py-2 rounded-full transition-all duration-200 ${
                           currentQuestion === index
                             ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg"
                             : answeredQuestions.has(index)
@@ -352,7 +352,7 @@ const InterviewActivePage = () => {
                     <div className="text-center">
                       <Button
                         onClick={saveUserAnswer}
-                        className={`px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
+                        className={`cursor-pointer px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 ${
                           isRecording
                             ? "bg-red-600 hover:bg-red-700 text-white shadow-lg transform hover:scale-105"
                             : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -409,7 +409,7 @@ const InterviewActivePage = () => {
                         onClick={nextQuestion}
                         disabled={currentQuestion >= questions.length - 1}
                         variant="outline"
-                        className="border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="cursor-pointer border-slate-300 text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <SkipForward className="h-4 w-4 mr-2" />
                         Next Question
@@ -418,7 +418,7 @@ const InterviewActivePage = () => {
                       {currentQuestion === questions.length - 1 && (
                         <Button
                           onClick={finishInterview}
-                          className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                          className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                         >
                           Finish Interview
                         </Button>

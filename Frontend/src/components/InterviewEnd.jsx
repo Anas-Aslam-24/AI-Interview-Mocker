@@ -21,7 +21,7 @@ const InterviewEnd = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100">
       {/* Header */}
-    
+
       {/* Main Content */}
       <div className="py-20">
         <div className="max-w-md mx-auto px-4">
@@ -69,7 +69,7 @@ const InterviewEnd = () => {
               <div className="space-y-3 pt-4">
                 <Button
                   onClick={handleViewDashboard}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-11"
+                  className="cursor-pointer w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-11"
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   View Dashboard
@@ -79,7 +79,7 @@ const InterviewEnd = () => {
                 <Button
                   onClick={handleStartNewInterview}
                   variant="outline"
-                  className="w-full border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200 h-11"
+                  className="cursor-pointer w-full border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200 h-11"
                 >
                   Start New Interview
                 </Button>

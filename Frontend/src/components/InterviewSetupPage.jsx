@@ -62,14 +62,14 @@ const InterviewSetupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
 
     const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate five interview questions  JSON format`;
     
     try {
       setLoading(true);
       const data =  await genAI(prompt);
-      console.log(data);
+      // console.log(data);
       const questionsArray = data.map((item) => item.question);
       // const answersArray = data.map((item) => item.answer);
 
@@ -372,7 +372,6 @@ const InterviewSetupPage = () => {
                     </div>
 
                     {/* Interview Duration */}
-                    
 
                     {/* Submit Button */}
                     <div className="pt-6 border-t border-slate-200">
@@ -386,7 +385,7 @@ const InterviewSetupPage = () => {
                           !formData.difficulty ||
                           !formData.experience
                         }
-                        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-12 text-lg font-semibold"
+                        className="cursor-pointer w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 h-12 text-lg font-semibold"
                       >
                         {loading ? (
                           <>
