@@ -55,8 +55,8 @@ const Navbar = () => {
           </NavLink>
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center">
+        {/* Desktop Navigation - Now shows on sm and above */}
+        <div className="hidden sm:flex items-center">
           {!user ? (
             <div className="flex items-center gap-2">
               <NavLink to="/login">
@@ -147,8 +147,8 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
+        {/* Mobile Menu Button - Now shows only on screens smaller than sm */}
+        <div className="sm:hidden">
           <Button
             variant="ghost"
             size="sm"
@@ -160,9 +160,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Now shows only on screens smaller than sm */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-200/60 backdrop-blur-sm">
+        <div className="sm:hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-200/60 backdrop-blur-sm">
           <div className="px-4 py-4 space-y-4">
             {!user ? (
               <div className="flex flex-col gap-3">
@@ -206,7 +206,7 @@ const Navbar = () => {
                   <NavLink to="/dashboard" onClick={closeMobileMenu}>
                     <Button
                       variant="outline"
-                      className="cursor-pointer w-full justify-start border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
+                      className="cursor-pointer mb-2 w-full justify-start border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200"
                     >
                       Dashboard
                     </Button>
