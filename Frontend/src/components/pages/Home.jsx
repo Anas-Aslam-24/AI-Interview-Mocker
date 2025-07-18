@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import {
   BarChart3,
   Target,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { INTERVIEW_API_ENDPOINT } from "@/utils/utils";
@@ -96,9 +96,18 @@ const Home = () => {
   ];
 
 
+  
+  const sectionRef = useRef(null);
+
+  const scrollToSection = () => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  
+
 
   const {user} = useSelector(store=>store.auth)
     usegetAllUserInterviews(user);
+    const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
@@ -131,6 +140,8 @@ const Home = () => {
                 </Button>
               </NavLink>
               <Button
+               
+               onClick={scrollToSection}
                 size="lg"
                 variant="outline"
                 className=" cursor-pointer border-white/30 text-yellow-500 hover:bg-white/10 font-semibold px-8 py-6 text-lg rounded-xl backdrop-blur-sm"
@@ -200,7 +211,7 @@ const Home = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-white">
+      <section ref={sectionRef} className="py-20 bg-white">
         <div className="max-w-10/12 mx-auto px-4">
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-teal-100 text-teal-700 border-teal-200">
@@ -316,19 +327,22 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
+              onClick={() => {
+                navigate("/interview");
+              }}
               size="lg"
               className=" cursor-pointer bg-white text-emerald-600 hover:bg-gray-100 font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
               Get Started Free
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button
+            {/* <Button
               size="lg"
               variant="outline"
               className="cursor-pointer border-white/30 text-yellow-500 hover:bg-white/10 font-semibold px-8 py-6 text-lg rounded-xl backdrop-blur-sm"
             >
               View Demo
-            </Button>
+            </Button> */}
           </div>
         </div>
       </section>
