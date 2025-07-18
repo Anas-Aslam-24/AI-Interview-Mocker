@@ -16,6 +16,12 @@ export const register = async (req, res) => {
       });
     }
     const file = req.file;
+    if(!file){
+      return res.status(400).json({
+        message: "Something is missing",
+        success: false,
+      });
+    }
     const fileUri = getDataUri(file);
     // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
