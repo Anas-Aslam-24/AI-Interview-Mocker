@@ -92,6 +92,7 @@ const Signup = () => {
                   Full Name<sup className="text-red-500 mt-3">*</sup>
                 </Label>
                 <Input
+                  required
                   type="text"
                   value={input.fullname}
                   name="fullname"
@@ -107,6 +108,7 @@ const Signup = () => {
                   Email Address<sup className="text-red-500 mt-3">*</sup>
                 </Label>
                 <Input
+                  required
                   type="email"
                   value={input.email}
                   name="email"
@@ -122,6 +124,7 @@ const Signup = () => {
                   Phone Number<sup className="text-red-500 mt-3">*</sup>
                 </Label>
                 <Input
+                  required
                   type="text"
                   value={input.phoneNumber}
                   name="phoneNumber"
@@ -137,6 +140,7 @@ const Signup = () => {
                   Password<sup className="text-red-500 mt-3">*</sup>
                 </Label>
                 <Input
+                  required
                   type="password"
                   value={input.password}
                   name="password"
