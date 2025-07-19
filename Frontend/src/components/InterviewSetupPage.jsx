@@ -64,7 +64,7 @@ const InterviewSetupPage = () => {
     e.preventDefault();
     // console.log(formData);
 
-    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate five interview questions  JSON format`;
+    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate five interview questions in  JSON format`;
     
     try {
       setLoading(true);
@@ -88,7 +88,7 @@ const InterviewSetupPage = () => {
           }
         );
          if (res.data.success) {
-          dispatch(setQuestions(questionsArray));
+          dispatch((questisetQuestionsonsArray));
           dispatch(setSingleInterview(res.data.interview));
           navigate(`/interview/${res.data.interview._id}`);
         
