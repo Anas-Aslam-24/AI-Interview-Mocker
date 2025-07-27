@@ -88,7 +88,7 @@ const InterviewSetupPage = () => {
           }
         );
          if (res.data.success) {
-          dispatch((questisetQuestionsonsArray));
+          dispatch((setQuestions(questionsArray)));
           dispatch(setSingleInterview(res.data.interview));
           navigate(`/interview/${res.data.interview._id}`);
         
