@@ -64,7 +64,7 @@ const InterviewSetupPage = () => {
     e.preventDefault();
     // console.log(formData);
 
-    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate five interview questions in  JSON format`;
+    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate 10 interview questions in  JSON format`;
     
     try {
       setLoading(true);
