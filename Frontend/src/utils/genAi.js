@@ -15,8 +15,8 @@ async function genAI(prompt) {
 
   try {
     const response = await ai.models.generateContent({
-      // model: "gemini-2.0-flash",
-      model: "gemini-1.5-pro-latest",
+      model: "gemini-2.0-flash",
+      // model: "gemini-1.5-pro-latest",
       contents: prompt,
     });
     // console.log(response.text);
