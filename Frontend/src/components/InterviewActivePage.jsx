@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,9 +28,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { INTERVIEW_API_ENDPOINT } from "@/utils/utils";
 import axios from "axios";
 import { setInterviewResult } from "@/redux/slices/interviewSlice";
-import { toast } from "sonner";
-import store from "@/redux/store";
+// import { toast } from "sonner";
 import usegetAllUserInterviews from "@/hooks/usegetAllUserInterviews";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { io } from "socket.io-client";
 
 const InterviewActivePage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -68,6 +70,8 @@ const InterviewActivePage = () => {
     } else {
       startSpeechToText();
     }
+
+    HandleClick();
   };
 
   // Process only new results to avoid accumulation
@@ -210,8 +214,131 @@ const InterviewActivePage = () => {
 
 
 
+
+      //*************************** Detection*********************************** */
+
+      const webcamRef = useRef(null);
+      const socketRef = useRef(null);
+      const intervalRef = useRef(null);
+
+      const [analysis, setAnalysis] = useState({
+        face_detected: false,
+        face_count: 0,
+        focused: false,
+      });
+
+      const [focusedFrames, setFocusedFrames] = useState(0);
+      const [totalFrames, setTotalFrames] = useState(0);
+      const [focusPercent, setFocusPercent] = useState(0);
+      const [recordingStarted, setRecordingStarted] = useState(false);
+      const [lastWarning, setLastWarning] = useState("");
+
+      const handleStartRecording = () => {
+        if (recordingStarted) return;
+
+        // Connect socket
+        // socketRef.current = io("http://localhost:5000");
+        socketRef.current = io(
+          "https://eye-face-detection-microservice.onrender.com",
+          {
+            transports: ["websocket"], // Force WebSocket
+          }
+        );
+
+        setFocusedFrames(0);
+        setTotalFrames(0);
+        setFocusPercent(0);
+        setLastWarning("");
+
+        setRecordingStarted(true);
+
+        // Emit frames every 500ms
+        intervalRef.current = setInterval(() => {
+          if (webcamRef.current) {
+            const imageSrc = webcamRef.current.getScreenshot();
+            if (imageSrc && socketRef.current) {
+              socketRef.current.emit("frame", { image: imageSrc });
+            }
+          }
+        }, 500);
+
+        // Listen for analysis
+       socketRef.current.on("analysis", (data) => {
+         setAnalysis(data);
+         setTotalFrames((prev) => prev + 1);
+         if (data.focused) {
+           setFocusedFrames((prev) => prev + 1);
+         }
+
+         const currentFocusPercent =
+           ((focusedFrames + (data.focused ? 1 : 0)) / (totalFrames + 1)) * 100;
+
+         let warning = "";
+
+         if (data.face_count > 1) {
+           warning =
+             "⚠️ Multiple faces detected! Only one person should be visible.";
+         } else if (!data.face_detected) {
+           warning =
+             "⚠️ No face detected! Please stay visible in front of the camera.";
+         } else if (!data.focused) {
+           warning = "⚠️ You seem distracted. Please stay focused.";
+         } else if (currentFocusPercent < 60 && totalFrames > 8) {
+           warning =
+             "⚠️ Your focus is too low. Pay attention to the interview.";
+         }
+
+         if (warning && warning !== lastWarning) {
+           toast.warn(warning);
+           setLastWarning(warning);
+         }
+
+         if (!warning) setLastWarning("");
+       });
+
+      };
+
+      const handleStopRecording = () => {
+        if (!recordingStarted) return;
+
+        setFocusedFrames(0);
+        setTotalFrames(0);
+        setFocusPercent(0);
+
+        // Clear intervals and socket
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
+
+        setRecordingStarted(false);
+      };
+
+      const HandleClick = async()=>{
+        if(recordingStarted){
+          handleStopRecording();
+        }
+        else{
+          handleStartRecording();
+        }
+      }
+
+      // Update focus percentage
+      useEffect(() => {
+        if (totalFrames > 0) {
+          const percent = ((focusedFrames / totalFrames) * 100).toFixed(2);
+          setFocusPercent(Number(percent));
+        }
+      }, [focusedFrames, totalFrames]);
+
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-stone-100">
+      <ToastContainer />
       {/* Header with Timer */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 py-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
@@ -327,16 +454,23 @@ const InterviewActivePage = () => {
                   <div className="flex-1 bg-black rounded-xl overflow-hidden mb-6 flex items-center justify-center min-h-[400px]">
                     <div className="text-center">
                       {cameraEnabled ? (
-                        <Webcam
-                          className="w-full h-full object-cover rounded-xl"
-                          onUserMedia={() => {
-                            setCameraEnabled(true);
-                          }}
-                          onUserMediaError={() => {
-                            setCameraEnabled(false);
-                          }}
-                          mirrored={true}
-                        />
+                        <div className="relative w-full h-full">
+                          <Webcam
+                            className="w-full h-full object-cover rounded-xl"
+                            ref={webcamRef}
+                            screenshotFormat="image/jpeg"
+                            onUserMedia={() => {
+                              setCameraEnabled(true);
+                            }}
+                            onUserMediaError={() => {
+                              setCameraEnabled(false);
+                            }}
+                            mirrored={true}
+                          />
+                          <div className="absolute top-3 left-3 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-semibold shadow">
+                            🎯 Focus: {focusPercent}%
+                          </div>
+                        </div>
                       ) : (
                         <div className="w-32 h-32 bg-slate-700 rounded-full flex items-center justify-center mb-6 mx-auto">
                           <User className="h-16 w-16 text-slate-400" />

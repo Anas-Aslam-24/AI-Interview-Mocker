@@ -18,6 +18,7 @@ app.use(cookieParser());
 const corsOptions = {
   origin: [
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://ai-interview-mocker-frontend-fast.vercel.app",
   ],
   credentials: true,
@@ -36,7 +37,7 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/interview", interviewRoute);
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   connectDB();
