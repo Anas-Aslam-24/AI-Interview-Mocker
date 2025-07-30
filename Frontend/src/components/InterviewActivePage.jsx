@@ -238,11 +238,20 @@ const InterviewActivePage = () => {
 
         // Connect socket
         // socketRef.current = io("http://localhost:5000");
+        // socketRef.current = io(
+        //   "https://eye-face-detection-microservice.onrender.com",
+        //   {
+        //     transports: ["websocket"], // Force WebSocket
+        //     // reconnection: true,
+        //     // reconnectionAttempts: 5,
+        //     // reconnectionDelay: 2000,
+        //   }
+
+          
+        // );
+
         socketRef.current = io(
-          "https://eye-face-detection-microservice.onrender.com",
-          {
-            transports: ["websocket"], // Force WebSocket
-          }
+          "https://eye-face-detection-microservice.onrender.com"
         );
 
         setFocusedFrames(0);
