@@ -64,7 +64,12 @@ const InterviewSetupPage = () => {
     e.preventDefault();
     // console.log(formData);
 
-    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate 10 interview questions in  JSON format`;
+    const prompt = `jobTitle: ${formData.jobTitle}, company: ${formData.company}, jobDescription: ${formData.jobDescription}, skills: ${formData.skills}, difficultyLevel: ${formData.difficulty}, experience: ${formData.experience}. Based on this information, generate 10 interview questions in JSON format. The questions should be focused on:
+1. Conceptual understanding of ${formData.skills},
+2. Scenario-based problem solving,
+3. Predicting the output of code snippets,
+4. Core data structures and algorithms relevant to the role.
+Ensure questions are practical, relevant to the job title and description, and challenge problem-solving and coding logic.generate questions in  JSON format`;
     
     try {
       setLoading(true);
